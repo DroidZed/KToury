@@ -1,0 +1,31 @@
+type LongLat {
+    id: ID!,
+    long: Float!,
+    lat: Float!
+}
+
+type Address {
+    id: ID!,
+    city: String!,
+    street: String!,
+    houseNumber: String!,
+    state: String!,
+    country: String!,
+    location: LongLat!
+}
+
+enum Role {
+    CLIENT,
+    ADMIN,
+    TOUR_GUIDE
+}
+
+type User {
+    id: ID!,
+    email: String!
+    address: Address!,
+    password: String!,
+    fullName: String!,
+    picture: String,
+    role: Role,
+}

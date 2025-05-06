@@ -1,0 +1,51 @@
+services:
+  ktoury:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ktoury
+    ports:
+      - '8080:8080'
+    networks:
+      - ktouryNetwork
+    depends_on:
+      - pgAdmin
+      - postgresDB
+      - redis
+  pgAdmin:
+    container_name: pg-dashboard
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=aymen.dragon5@gmail.com
+      - PGADMIN_DEFAULT_PASSWORD=aymen77
+    image: dpage/pgadmin4
+    ports:
+      - '9097:80'
+      - '9092:443'
+    networks:
+      - ktouryNetwork
+    depends_on:
+      - postgresDB
+  postgresDB:
+    container_name: pg-db
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=ktoury
+    ports:
+      - '5432:5432'
+    networks:
+      - ktouryNetwork
+    volumes:
+      - database:/var/lib/postgresql/data
+  redis:
+    image: 'redis:latest'
+    ports:
+      - '6379'
+    networks:
+      - ktouryNetwork
+volumes:
+  database:
+networks:
+  ktouryNetwork:
+    driver: bridge
