@@ -39,3 +39,4 @@ out/
 .kotlin
 
 .env
+application-dev.properties

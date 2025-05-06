@@ -1,0 +1,5 @@
+schema: schema.graphqls
+documents: '**/*.graphql'
+include:
+  - entities.graphql
+  - user.graphql

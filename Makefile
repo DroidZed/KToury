@@ -1,8 +1,16 @@
-#IMAGE_TAG=latest
 include .env
 
-build:
-	docker build . -t droidzed/ktoury:$(IMAGE_TAG)
+image:
+	docker build -t droidzed/ktoury:$(IMAGE_TAG) .
 
 clean:
 	.\gradlew clean
+
+up:
+	docker compose up -d
+
+down:
+	docker compose down
+
+keycloak:
+	kc start-dev

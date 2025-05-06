@@ -1,0 +1,25 @@
+input LoginBody {
+    email: String!
+    password: String!,
+}
+
+input RegisterBody {
+    email: String!
+    password: String!,
+    fullName: String!,
+}
+
+type AuthResponse {
+    accessToken: String,
+    refreshToken: String,
+    error: String,
+}
+
+type Mutation {
+    login(body: LoginBody): AuthResponse!
+    register(body: RegisterBody): ApiResponse!
+}
+
+type Query {
+    getUser(id: ID): User!
+}

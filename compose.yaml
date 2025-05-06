@@ -1,17 +1,4 @@
 services:
-  ktoury:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: ktoury
-    ports:
-      - '8080:8080'
-    networks:
-      - ktouryNetwork
-    depends_on:
-      - pgAdmin
-      - postgresDB
-      - redis
   pgAdmin:
     container_name: pg-dashboard
     environment:
@@ -25,25 +12,55 @@ services:
       - ktouryNetwork
     depends_on:
       - postgresDB
+
   postgresDB:
-    container_name: pg-db
+    container_name: ktoury-db
     image: postgres:latest
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=ktoury
+      - POSTGRES_DB=ktoury-db
     ports:
       - '5432:5432'
     networks:
       - ktouryNetwork
     volumes:
       - database:/var/lib/postgresql/data
+
   redis:
     image: 'redis:latest'
     ports:
       - '6379'
     networks:
       - ktouryNetwork
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    ports:
+      - "8088:8080"
+    command:
+      - start-dev
+
+  ktoury:
+    image: droidzed/ktoury:${IMAGE_TAG}
+    container_name: ktoury-server
+    ports:
+      - '8080:8080'
+    networks:
+      - ktouryNetwork
+    depends_on:
+      - pgAdmin
+      - postgresDB
+      - redis
+      - keycloak
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://ktoury-db:5432/ktoury-db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+
 volumes:
   database:
 networks:
